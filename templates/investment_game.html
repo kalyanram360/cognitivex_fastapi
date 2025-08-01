@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Monthly Investment Challenge</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Poppins:wght@300;400;600;700&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 2s infinite alternate;
+    }
+
+    @keyframes twinkle {
+      0% { opacity: 0.3; transform: scale(1); }
+      100% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .game-container {
+      position: relative;
+      z-index: 10;
+      max-width: 1400px;
+      margin: 20px auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 25px;
+      min-height: calc(100vh - 40px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      animation: slideIn 0.8s ease-out;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .header {
+      text-align: center;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 25px 25px 0 0;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+      animation: shine 3s infinite;
+    }
+
+    .game-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2.5rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 2;
+    }
+
+    .game-content {
+      flex: 1;
+      display: flex;
+      min-height: 600px;
+    }
+
+    .left-panel {
+      flex: 1;
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .left-panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+      animation: patternMove 20s linear infinite;
+    }
+
+    @keyframes patternMove {
+      0% { transform: translateX(0) translateY(0); }
+      100% { transform: translateX(60px) translateY(60px); }
+    }
+
+    .character-display {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .character {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      animation: float 3s ease-in-out infinite;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      margin-bottom: 20px;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(5deg); }
+    }
+
+    .user-stats {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 300px;
+      margin-top: 20px;
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+    }
+
+    .stat-label {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .stat-value {
+      font-weight: 700;
+      color: #11998e;
+      font-size: 1.2rem;
+    }
+
+    .growth-value {
+      color: #38ef7d;
+      font-weight: 700;
+    }
+
+    .budget-remaining {
+      background: linear-gradient(135deg, #11998e, #38ef7d);
+      color: white;
+      border-radius: 15px;
+      padding: 15px;
+      text-align: center;
+      margin-top: 15px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .right-panel {
+      flex: 1.5;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 0 0 25px 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .month-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .month-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .month-budget {
+      font-size: 1.3rem;
+      color: #11998e;
+      background: rgba(17, 153, 142, 0.1);
+      padding: 10px 20px;
+      border-radius: 25px;
+      display: inline-block;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      flex: 1;
+      max-height: calc(100vh - 300px);
+      overflow-y: auto;
+    }
+
+    .option-card {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 15px;
+      padding: 15px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid transparent;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 120px;
+      max-height: 140px;
+    }
+
+    .option-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .option-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .option-card:hover::before {
+      left: 100%;
+    }
+
+    .risky-card {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    }
+
+    .safe-card {
+      background: linear-gradient(135deg, #11998e, #38ef7d);
+    }
+
+    .moderate-card {
+      background: linear-gradient(135deg, #f093fb, #f5576c);
+    }
+
+    .option-emoji {
+      font-size: 1.8rem;
+      text-align: center;
+      margin-bottom: 8px;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-5px); }
+    }
+
+    .option-label {
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 8px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.2;
+    }
+
+    .option-amount {
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-align: center;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      background: rgba(255, 255, 255, 0.2);
+      padding: 5px 10px;
+      border-radius: 12px;
+    }
+
+    .option-return {
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 3px 8px;
+      border-radius: 8px;
+    }
+
+    .end-screen {
+      display: none;
+      text-align: center;
+      animation: celebration 0.8s ease-out;
+      padding: 50px;
+    }
+
+    @keyframes celebration {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .final-character {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #11998e, #38ef7d);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6rem;
+      margin: 0 auto 30px;
+      animation: victory 2s ease-in-out infinite;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    @keyframes victory {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.1) rotate(10deg); }
+    }
+
+    .final-score {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #11998e;
+      margin: 20px 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .celebration-text {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .restart-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .restart-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .progress-indicator {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+    }
+
+    .progress-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .progress-dot.active {
+      background: white;
+      transform: scale(1.3);
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    @media (max-width: 1024px) {
+      .game-content {
+        flex-direction: column;
+      }
+      
+      .left-panel {
+        min-height: 250px;
+      }
+      
+      .character {
+        width: 120px;
+        height: 120px;
+        font-size: 4rem;
+      }
+      
+      .options-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-height: 400px;
+      }
+
+      .option-card {
+        min-height: 110px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .game-container {
+        margin: 10px;
+      }
+      
+      .game-title {
+        font-size: 2rem;
+      }
+      
+      .left-panel, .right-panel {
+        padding: 20px;
+      }
+
+      .options-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .option-card {
+        min-height: 100px;
+        padding: 12px;
+      }
+
+      .option-emoji {
+        font-size: 1.5rem;
+      }
+
+      .option-label {
+        font-size: 0.9rem;
+      }
+
+      .option-amount {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" id="stars"></div>
+  
+  <div class="game-container">
+    <div class="header">
+      <h1 class="game-title">📈 Monthly Investment Challenge</h1>
+    </div>
+
+    <div id="gameScreen" class="game-content">
+      <div class="left-panel">
+        <div class="character-display">
+          <div class="character" id="character">📊</div>
+          <div class="user-stats">
+            <div class="stat-item">
+              <span class="stat-label">Month:</span>
+              <span class="stat-value" id="currentMonth">1 / 10</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Total Invested:</span>
+              <span class="stat-value" id="totalInvested">₹0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Portfolio Value:</span>
+              <span class="stat-value growth-value" id="portfolioValue">₹0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Total Growth:</span>
+              <span class="stat-value growth-value" id="totalGrowth">₹0</span>
+            </div>
+            <div class="budget-remaining" id="budgetRemaining">
+              Monthly Budget: ₹0
+            </div>
+          </div>
+        </div>
+        
+        <div class="progress-indicator" id="progressIndicator"></div>
+      </div>
+
+      <div class="right-panel">
+        <div class="month-header">
+          <div class="month-title" id="monthTitle">Month 1</div>
+          <div class="month-budget" id="monthBudget">Investment Budget: ₹15,000</div>
+        </div>
+        
+        <div class="options-grid" id="optionsGrid"></div>
+      </div>
+    </div>
+
+    <div class="end-screen" id="endScreen">
+      <div class="final-character">🎯</div>
+      <h2 style="font-size: 2.5rem; color: #11998e; margin-bottom: 20px;">Investment Journey Complete!</h2>
+      <p class="celebration-text">You've managed your investments for 10 months!</p>
+      <div class="final-score">Invested: ₹<span id="finalInvestment">0</span></div>
+      <div class="final-score" style="color: #38ef7d;">Portfolio Value: ₹<span id="finalPortfolio">0</span></div>
+      <div class="final-score" style="color: #38ef7d;">Total Growth: ₹<span id="finalGrowth">0</span></div>
+      <p style="font-size: 1.2rem; margin: 30px 0; color: #666;" id="finalMessage"></p>
+      <button class="restart-btn" onclick="restartGame()">📈 Invest Again</button>
+    </div>
+  </div>
+
+  <script>
+    // Game state
+    let month = 1;
+    let totalInvested = 0;
+    let portfolioValue = 0;
+    const totalMonths = 10;
+    
+    // Monthly investment budgets
+    const monthlyBudgets = {
+      1: 15000, 2: 12000, 3: 18000, 4: 14000, 5: 16000,
+      6: 20000, 7: 13000, 8: 17000, 9: 15000, 10: 19000
+    };
+
+    // Investment options with different risk levels and expected returns
+    const monthlyOptions = {
+      1: {
+        safe: [
+          { label: "Fixed Deposit", amount: 5000, emoji: "🏦", returnRate: 0.07, risk: "low" },
+          { label: "Government Bonds", amount: 8000, emoji: "🏛️", returnRate: 0.08, risk: "low" },
+          { label: "Savings Account", amount: 3000, emoji: "💰", returnRate: 0.04, risk: "low" }
+        ],
+        moderate: [
+          { label: "Mutual Funds", amount: 7000, emoji: "📊", returnRate: 0.12, risk: "medium" },
+          { label: "Corporate Bonds", amount: 10000, emoji: "🏢", returnRate: 0.10, risk: "medium" },
+          { label: "Balanced Funds", amount: 6000, emoji: "⚖️", returnRate: 0.11, risk: "medium" }
+        ],
+        risky: [
+          { label: "Growth Stocks", amount: 12000, emoji: "🚀", returnRate: 0.18, risk: "high" },
+          { label: "Tech Stocks", amount: 15000, emoji: "💻", returnRate: 0.20, risk: "high" },
+          { label: "Crypto", amount: 8000, emoji: "₿", returnRate: 0.25, risk: "high" }
+        ]
+      },
+      2: {
+        safe: [
+          { label: "PPF", amount: 4000, emoji: "🛡️", returnRate: 0.075, risk: "low" },
+          { label: "NSC", amount: 6000, emoji: "📜", returnRate: 0.068, risk: "low" },
+          { label: "Treasury Bills", amount: 5000, emoji: "🏦", returnRate: 0.065, risk: "low" }
+        ],
+        moderate: [
+          { label: "Index Funds", amount: 8000, emoji: "📈", returnRate: 0.115, risk: "medium" },
+          { label: "ELSS Funds", amount: 9000, emoji: "🎯", returnRate: 0.13, risk: "medium" },
+          { label: "Hybrid Funds", amount: 7000, emoji: "🔄", returnRate: 0.105, risk: "medium" }
+        ],
+        risky: [
+          { label: "Small Cap Stocks", amount: 10000, emoji: "🎲", returnRate: 0.22, risk: "high" },
+          { label: "Forex Trading", amount: 12000, emoji: "💱", returnRate: 0.24, risk: "high" },
+          { label: "Options Trading", amount: 8000, emoji: "⚡", returnRate: 0.28, risk: "high" }
+        ]
+      },
+      3: {
+        safe: [
+          { label: "Senior Citizen Savings", amount: 7000, emoji: "👴", returnRate: 0.076, risk: "low" },
+          { label: "Post Office Deposits", amount: 5000, emoji: "📮", returnRate: 0.069, risk: "low" },
+          { label: "Bank RD", amount: 4000, emoji: "🏪", returnRate: 0.065, risk: "low" }
+        ],
+        moderate: [
+          { label: "Large Cap Funds", amount: 9000, emoji: "🏗️", returnRate: 0.108, risk: "medium" },
+          { label: "Multi Cap Funds", amount: 11000, emoji: "🎪", returnRate: 0.125, risk: "medium" },
+          { label: "Sector Funds", amount: 8000, emoji: "🏭", returnRate: 0.14, risk: "medium" }
+        ],
+        risky: [
+          { label: "Mid Cap Stocks", amount: 13000, emoji: "🎪", returnRate: 0.19, risk: "high" },
+          { label: "IPO Investments", amount: 15000, emoji: "🆕", returnRate: 0.21, risk: "high" },
+          { label: "Commodity Trading", amount: 10000, emoji: "🥇", returnRate: 0.23, risk: "high" }
+        ]
+      },
+      4: {
+        safe: [
+          { label: "Provident Fund", amount: 6000, emoji: "👷", returnRate: 0.085, risk: "low" },
+          { label: "Life Insurance", amount: 8000, emoji: "🛡️", returnRate: 0.06, risk: "low" },
+          { label: "Gold Bonds", amount: 5000, emoji: "🥇", returnRate: 0.07, risk: "low" }
+        ],
+        moderate: [
+          { label: "Dividend Yield Funds", amount: 7000, emoji: "💸", returnRate: 0.11, risk: "medium" },
+          { label: "Value Funds", amount: 10000, emoji: "💎", returnRate: 0.12, risk: "medium" },
+          { label: "International Funds", amount: 9000, emoji: "🌍", returnRate: 0.135, risk: "medium" }
+        ],
+        risky: [
+          { label: "Penny Stocks", amount: 8000, emoji: "🪙", returnRate: 0.30, risk: "high" },
+          { label: "Startup Equity", amount: 12000, emoji: "🚀", returnRate: 0.26, risk: "high" },
+          { label: "Futures Trading", amount: 14000, emoji: "⏰", returnRate: 0.27, risk: "high" }
+        ]
+      },
+      5: {
+        safe: [
+          { label: "SCSS", amount: 7000, emoji: "👴", returnRate: 0.078, risk: "low" },
+          { label: "Kisan Vikas Patra", amount: 5000, emoji: "🌾", returnRate: 0.069, risk: "low" },
+          { label: "Monthly Income Scheme", amount: 6000, emoji: "📅", returnRate: 0.067, risk: "low" }
+        ],
+        moderate: [
+          { label: "Flexi Cap Funds", amount: 8000, emoji: "🔄", returnRate: 0.118, risk: "medium" },
+          { label: "Contra Funds", amount: 9000, emoji: "🔀", returnRate: 0.128, risk: "medium" },
+          { label: "Thematic Funds", amount: 10000, emoji: "🎨", returnRate: 0.132, risk: "medium" }
+        ],
+        risky: [
+          { label: "Emerging Markets", amount: 11000, emoji: "🌱", returnRate: 0.24, risk: "high" },
+          { label: "Biotech Stocks", amount: 13000, emoji: "🧬", returnRate: 0.28, risk: "high" },
+          { label: "Clean Energy", amount: 15000, emoji: "🌱", returnRate: 0.25, risk: "high" }
+        ]
+      },
+      6: {
+        safe: [
+          { label: "Infrastructure Bonds", amount: 8000, emoji: "🏗️", returnRate: 0.075, risk: "low" },
+          { label: "Tax Free Bonds", amount: 10000, emoji: "🏛️", returnRate: 0.08, risk: "low" },
+          { label: "Capital Gains Bonds", amount: 6000, emoji: "📈", returnRate: 0.07, risk: "low" }
+        ],
+        moderate: [
+          { label: "Credit Risk Funds", amount: 9000, emoji: "⚖️", returnRate: 0.13, risk: "medium" },
+          { label: "Dynamic Bond Funds", amount: 11000, emoji: "🎭", returnRate: 0.115, risk: "medium" },
+          { label: "Banking Funds", amount: 8000, emoji: "🏦", returnRate: 0.125, risk: "medium" }
+        ],
+        risky: [
+          { label: "REIT", amount: 12000, emoji: "🏢", returnRate: 0.22, risk: "high" },
+          { label: "Commodity Funds", amount: 14000, emoji: "⛽", returnRate: 0.23, risk: "high" },
+          { label: "AI & Tech Funds", amount: 16000, emoji: "🤖", returnRate: 0.26, risk: "high" }
+        ]
+      },
+      7: {
+        safe: [
+          { label: "Sukanya Samriddhi", amount: 5000, emoji: "👧", returnRate: 0.078, risk: "low" },
+          { label: "Employee Provident Fund", amount: 7000, emoji: "👔", returnRate: 0.085, risk: "low" },
+          { label: "Voluntary Provident Fund", amount: 6000, emoji: "🤝", returnRate: 0.085, risk: "low" }
+        ],
+        moderate: [
+          { label: "Arbitrage Funds", amount: 8000, emoji: "⚖️", returnRate: 0.09, risk: "medium" },
+          { label: "Conservative Hybrid", amount: 9000, emoji: "🛡️", returnRate: 0.105, risk: "medium" },
+          { label: "Short Duration Funds", amount: 7000, emoji: "⏱️", returnRate: 0.08, risk: "medium" }
+        ],
+        risky: [
+          { label: "Pharma Stocks", amount: 13000, emoji: "💊", returnRate: 0.24, risk: "high" },
+          { label: "Defense Stocks", amount: 11000, emoji: "🛡️", returnRate: 0.21, risk: "high" },
+          { label: "Gaming Stocks", amount: 15000, emoji: "🎮", returnRate: 0.27, risk: "high" }
+        ]
+      },
+      8: {
+        safe: [
+          { label: "Pradhan Mantri Vaya Vandana", amount: 8000, emoji: "👴", returnRate: 0.078, risk: "low" },
+          { label: "Atal Pension Yojana", amount: 5000, emoji: "🏛️", returnRate: 0.09, risk: "low" },
+          { label: "National Pension System", amount: 7000, emoji: "📋", returnRate: 0.095, risk: "low" }
+        ],
+        moderate: [
+          { label: "Focused Funds", amount: 10000, emoji: "🎯", returnRate: 0.135, risk: "medium" },
+          { label: "Gilt Funds", amount: 8000, emoji: "🏛️", returnRate: 0.08, risk: "medium" },
+          { label: "Equity Savings", amount: 9000, emoji: "💰", returnRate: 0.115, risk: "medium" }
+        ],
+        risky: [
+          { label: "Electric Vehicle Stocks", amount: 14000, emoji: "🚗", returnRate: 0.29, risk: "high" },
+          { label: "Space Tech", amount: 16000, emoji: "🚀", returnRate: 0.31, risk: "high" },
+          { label: "Quantum Computing", amount: 12000, emoji: "⚛️", returnRate: 0.33, risk: "high" }
+        ]
+      },
+      9: {
+        safe: [
+          { label: "Post Office Time Deposit", amount: 6000, emoji: "📮", returnRate: 0.069, risk: "low" },
+          { label: "Unit Linked Insurance", amount: 9000, emoji: "🔗", returnRate: 0.08, risk: "low" },
+          { label: "Endowment Plans", amount: 7000, emoji: "🎁", returnRate: 0.065, risk: "low" }
+        ],
+        moderate: [
+          { label: "Asset Allocation Funds", amount: 8000, emoji: "📊", returnRate: 0.11, risk: "medium" },
+          { label: "Solution Oriented Funds", amount: 10000, emoji: "🎯", returnRate: 0.125, risk: "medium" },
+          { label: "Retirement Funds", amount: 9000, emoji: "🏖️", returnRate: 0.12, risk: "medium" }
+        ],
+        risky: [
+          { label: "Green Energy Stocks", amount: 13000, emoji: "🌱", returnRate: 0.26, risk: "high" },
+          { label: "Fintech Stocks", amount: 15000, emoji: "💳", returnRate: 0.28, risk: "high" },
+          { label: "Metaverse Stocks", amount: 11000, emoji: "🥽", returnRate: 0.30, risk: "high" }
+        ]
+      },
+      10: {
+        safe: [
+          { label: "Senior Citizen FD", amount: 8000, emoji: "👴", returnRate: 0.075, risk: "low" },
+          { label: "Mahila Samman Savings", amount: 6000, emoji: "👩", returnRate: 0.075, risk: "low" },
+          { label: "Child Education Plans", amount: 7000, emoji: "🎓", returnRate: 0.07, risk: "low" }
+        ],
+        moderate: [
+          { label: "Target Date Funds", amount: 9000, emoji: "📅", returnRate: 0.118, risk: "medium" },
+          { label: "ESG Funds", amount: 11000, emoji: "🌍", returnRate: 0.13, risk: "medium" },
+          { label: "Multi Asset Funds", amount: 10000, emoji: "🔄", returnRate: 0.122, risk: "medium" }
+        ],
+        risky: [
+          { label: "Next Gen Tech", amount: 14000, emoji: "🔮", returnRate: 0.32, risk: "high" },
+          { label: "Disruptive Innovation", amount: 16000, emoji: "💥", returnRate: 0.35, risk: "high" },
+          { label: "Emerging Tech ETF", amount: 12000, emoji: "🛸", returnRate: 0.29, risk: "high" }
+        ]
+      }
+    };
+
+    const characters = ['📊', '📈', '💹', '🎯', '💰', '📋'];
+    let currentCharacter = characters[Math.floor(Math.random() * characters.length)];
+
+    function createStars() {
+      const starsContainer = document.getElementById('stars');
+      for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.width = Math.random() * 3 + 1 + 'px';
+        star.style.height = star.style.width;
+        star.style.animationDelay = Math.random() * 2 + 's';
+        starsContainer.appendChild(star);
+      }
+    }
+
+    function createProgressIndicator() {
+      const progressIndicator = document.getElementById('progressIndicator');
+      progressIndicator.innerHTML = '';
+      for (let i = 1; i <= totalMonths; i++) {
+        const dot = document.createElement('div');
+        dot.className = `progress-dot ${i <= month ? 'active' : ''}`;
+        progressIndicator.appendChild(dot);
+      }
+    }
+
+    function updateUI() {
+      document.getElementById('currentMonth').textContent = `${month} / ${totalMonths}`;
+      document.getElementById('totalInvested').textContent = `₹${totalInvested.toLocaleString()}`;
+      document.getElementById('portfolioValue').textContent = `₹${portfolioValue.toLocaleString()}`;
+      document.getElementById('totalGrowth').textContent = `₹${(portfolioValue - totalInvested).toLocaleString()}`;
+      document.getElementById('monthTitle').textContent = `Month ${month}`;
+      document.getElementById('monthBudget').textContent = `Investment Budget: ₹${monthlyBudgets[month].toLocaleString()}`;
+      document.getElementById('budgetRemaining').textContent = `Monthly Budget: ₹${monthlyBudgets[month].toLocaleString()}`;
+      createProgressIndicator();
+    }
+
+    function renderOptions() {
+      const optionsGrid = document.getElementById('optionsGrid');
+      optionsGrid.innerHTML = '';
+      
+      const options = monthlyOptions[month];
+      
+      // Render safe options
+      options.safe.forEach((option, index) => {
+        const card = document.createElement('div');
+        card.className = 'option-card safe-card';
+        card.style.animationDelay = (index * 0.1) + 's';
+        card.innerHTML = `
+          <div class="option-emoji">${option.emoji}</div>
+          <div class="option-label">${option.label}</div>
+          <div class="option-amount">₹${option.amount.toLocaleString()}</div>
+          <div class="option-return">${(option.returnRate * 100).toFixed(1)}% return</div>
+        `;
+        card.onclick = () => selectOption(option);
+        optionsGrid.appendChild(card);
+      });
+
+      // Render moderate options
+      options.moderate.forEach((option, index) => {
+        const card = document.createElement('div');
+        card.className = 'option-card moderate-card';
+        card.style.animationDelay = ((options.safe.length + index) * 0.1) + 's';
+        card.innerHTML = `
+          <div class="option-emoji">${option.emoji}</div>
+          <div class="option-label">${option.label}</div>
+          <div class="option-amount">₹${option.amount.toLocaleString()}</div>
+          <div class="option-return">${(option.returnRate * 100).toFixed(1)}% return</div>
+        `;
+        card.onclick = () => selectOption(option);
+        optionsGrid.appendChild(card);
+      });
+
+      // Render risky options
+      options.risky.forEach((option, index) => {
+        const card = document.createElement('div');
+        card.className = 'option-card risky-card';
+        card.style.animationDelay = ((options.safe.length + options.moderate.length + index) * 0.1) + 's';
+        card.innerHTML = `
+          <div class="option-emoji">${option.emoji}</div>
+          <div class="option-label">${option.label}</div>
+          <div class="option-amount">₹${option.amount.toLocaleString()}</div>
+          <div class="option-return">${(option.returnRate * 100).toFixed(1)}% return</div>
+        `;
+        card.onclick = () => selectOption(option);
+        optionsGrid.appendChild(card);
+      });
+    }
+
+    function selectOption(option) {
+      // Add investment amount
+      totalInvested += option.amount;
+      
+      // Calculate growth based on risk and some randomness
+      let actualReturn = option.returnRate;
+      
+      // Add volatility based on risk level
+      if (option.risk === 'high') {
+        // High risk: -50% to +100% variance
+        actualReturn *= (0.5 + Math.random() * 1.5);
+      } else if (option.risk === 'medium') {
+        // Medium risk: -20% to +40% variance
+        actualReturn *= (0.8 + Math.random() * 0.6);
+      } else {
+        // Low risk: -5% to +10% variance
+        actualReturn *= (0.95 + Math.random() * 0.15);
+      }
+      
+      // Add the investment with its growth to portfolio
+      const monthlyGrowth = option.amount * (1 + actualReturn / 12);
+      portfolioValue += monthlyGrowth;
+
+      // Visual feedback
+      const character = document.getElementById('character');
+      character.style.animation = 'none';
+      setTimeout(() => {
+        character.style.animation = 'float 3s ease-in-out infinite';
+      }, 100);
+
+      setTimeout(() => {
+        month++;
+        if (month > totalMonths) {
+          endGame();
+        } else {
+          updateUI();
+          renderOptions();
+        }
+      }, 1000);
+    }
+
+    function endGame() {
+      document.getElementById('gameScreen').style.display = 'none';
+      document.getElementById('endScreen').style.display = 'block';
+      document.getElementById('finalInvestment').textContent = totalInvested.toLocaleString();
+      document.getElementById('finalPortfolio').textContent = portfolioValue.toLocaleString();
+      document.getElementById('finalGrowth').textContent = (portfolioValue - totalInvested).toLocaleString();
+      
+      const finalMessage = document.getElementById('finalMessage');
+      const growthPercentage = ((portfolioValue - totalInvested) / totalInvested) * 100;
+      
+      if (growthPercentage >= 20) {
+        finalMessage.textContent = "Outstanding! You're an investment master! 🌟";
+      } else if (growthPercentage >= 15) {
+        finalMessage.textContent = "Excellent returns! Great investment strategy! 💪";
+      } else if (growthPercentage >= 10) {
+        finalMessage.textContent = "Good growth! Keep learning and investing! 👍";
+      } else if (growthPercentage >= 5) {
+        finalMessage.textContent = "Steady progress! Conservative approach paid off! 📈";
+      } else {
+        finalMessage.textContent = "Market was tough! Try diversifying next time! 🎯";
+      }
+    }
+
+    function restartGame() {
+      month = 1;
+      totalInvested = 0;
+      portfolioValue = 0;
+      currentCharacter = characters[Math.floor(Math.random() * characters.length)];
+      document.getElementById('character').textContent = currentCharacter;
+      document.getElementById('endScreen').style.display = 'none';
+      document.getElementById('gameScreen').style.display = 'flex';
+      updateUI();
+      renderOptions();
+    }
+
+    // Initialize game
+    createStars();
+    document.getElementById('character').textContent = currentCharacter;
+    updateUI();
+    renderOptions();
+  </script>
+</body>
+</html>

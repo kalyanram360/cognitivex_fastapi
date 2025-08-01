@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinanceBot - Your Smart Finance Assistant</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#6B46C1",
+              secondary: "#38B2AC",
+            },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      :where([class^="ri-"])::before {
+          content: "\f3c2";
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 font-sans">
+    <div class="flex h-screen overflow-hidden">
+      <!-- Main Chat Interface -->
+      <div class="flex-1 flex flex-col">
+        <!-- Header -->
+        <header
+          class="bg-white shadow-sm border-b border-gray-200 px-6 py-4 flex items-center justify-between"
+        >
+          <div class="flex items-center space-x-3">
+            <div
+              class="w-8 h-8 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center"
+            >
+              <span class="text-white font-bold text-sm">F</span>
+            </div>
+            <h1 class="font-['Pacifico'] text-xl text-gray-800">FinanceBot</h1>
+          </div>
+          <div class="flex items-center space-x-4">
+            <button
+              id="storyModeToggle"
+              class="lg:hidden bg-primary text-white px-4 py-2 !rounded-button whitespace-nowrap flex items-center space-x-2"
+            >
+              <div class="w-4 h-4 flex items-center justify-center">
+                <i class="ri-magic-line"></i>
+              </div>
+              <span>Story Mode</span>
+            </button>
+            <div class="w-8 h-8 flex items-center justify-center">
+              <i class="ri-user-line text-gray-600"></i>
+            </div>
+          </div>
+        </header>
+        <!-- Chat Messages Area -->
+        <div id="chatContainer" class="flex-1 overflow-y-auto p-6 space-y-4">
+          <!-- Bot Welcome Message -->
+          <div class="flex items-start space-x-3">
+            <div
+              class="w-8 h-8 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center flex-shrink-0"
+            >
+              <div class="w-4 h-4 flex items-center justify-center">
+                <i class="ri-robot-line text-white text-sm"></i>
+              </div>
+            </div>
+            <div
+              class="bg-white rounded-xl rounded-tl-sm px-4 py-3 max-w-md shadow-sm"
+            >
+              <p class="text-gray-800">
+                Hi there! I'm your personal finance assistant. Ask me anything
+                about savings, investments, loans, taxes, or budgeting. I can
+                also explain things through interactive stories!
+              </p>
+              <span class="text-xs text-gray-500 mt-2 block">2:30 PM</span>
+            </div>
+          </div>
+          <!-- Sample User Message -->
+          <div class="flex items-start space-x-3 justify-end">
+            <div class="bg-primary rounded-xl rounded-tr-sm px-4 py-3 max-w-md">
+              <p class="text-white">How can I save $5000 in 6 months?</p>
+              <span class="text-xs text-purple-200 mt-2 block">2:31 PM</span>
+            </div>
+            <div
+              class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center flex-shrink-0"
+            >
+              <div class="w-4 h-4 flex items-center justify-center">
+                <i class="ri-user-line text-gray-600 text-sm"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bot Response -->
+          <div class="flex items-start space-x-3">
+            <div
+              class="w-8 h-8 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center flex-shrink-0"
+            >
+              <div class="w-4 h-4 flex items-center justify-center">
+                <i class="ri-robot-line text-white text-sm"></i>
+              </div>
+            </div>
+            <div
+              class="bg-white rounded-xl rounded-tl-sm px-4 py-3 max-w-lg shadow-sm"
+            >
+              <p class="text-gray-800 mb-3">
+                Great goal! To save $5000 in 6 months, you'll need to save
+                approximately $833 per month. Here's a practical approach:
+              </p>
+              <ul class="text-gray-800 space-y-2 mb-3">
+                <li class="flex items-center space-x-2">
+                  <div class="w-2 h-2 bg-secondary rounded-full"></div>
+                  <span>Track all expenses for one week</span>
+                </li>
+                <li class="flex items-center space-x-2">
+                  <div class="w-2 h-2 bg-secondary rounded-full"></div>
+                  <span>Cut unnecessary subscriptions</span>
+                </li>
+                <li class="flex items-center space-x-2">
+                  <div class="w-2 h-2 bg-secondary rounded-full"></div>
+                  <span>Automate savings transfers</span>
+                </li>
+                <li class="flex items-center space-x-2">
+                  <div class="w-2 h-2 bg-secondary rounded-full"></div>
+                  <span>Consider a side hustle</span>
+                </li>
+              </ul>
+              <button
+                class="bg-gradient-to-r from-primary to-secondary text-white px-4 py-2 !rounded-button text-sm whitespace-nowrap"
+              >
+                View Story Mode
+              </button>
+              <span class="text-xs text-gray-500 mt-2 block">2:32 PM</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Message Input Area -->
+        <div class="bg-white border-t border-gray-200 p-6">
+          <div class="flex items-center space-x-3">
+            <div class="flex-1 relative">
+              <input
+                type="text"
+                id="messageInput"
+                placeholder="Ask about budgeting, investing, loans, or any finance topic..."
+                class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+              />
+              <button
+                id="sendButton"
+                class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-purple-700 transition-colors"
+              >
+                <div class="w-4 h-4 flex items-center justify-center">
+                  <i class="ri-send-plane-line text-sm"></i>
+                </div>
+              </button>
+            </div>
+            <button
+              id="storyModeBtn"
+              class="hidden lg:flex bg-gradient-to-r from-secondary to-blue-500 text-white px-6 py-3 !rounded-button whitespace-nowrap items-center space-x-2 hover:from-teal-600 hover:to-blue-600 transition-all"
+            >
+              <div class="w-4 h-4 flex items-center justify-center">
+                <i class="ri-magic-line"></i>
+              </div>
+              <span>Enter Story Mode</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Story Mode Sidebar -->
+      <div
+        id="storySidebar"
+        class="w-80 bg-gradient-to-b from-purple-50 to-blue-50 border-l border-gray-200 flex-col hidden lg:flex"
+      >
+        <!-- Story Header -->
+        <div class="bg-gradient-to-r from-primary to-secondary p-6 text-white">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold">Story Mode</h2>
+            <button
+              id="closeSidebar"
+              class="lg:hidden w-6 h-6 flex items-center justify-center"
+            >
+              <i class="ri-close-line"></i>
+            </button>
+          </div>
+
+          <!-- User Avatar & Progress -->
+          <div class="flex items-center space-x-3 mb-4">
+            <div
+              class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center"
+            >
+              <div class="w-6 h-6 flex items-center justify-center">
+                <i class="ri-user-star-line text-white"></i>
+              </div>
+            </div>
+            <div class="flex-1">
+              <p class="font-medium">Finance Explorer</p>
+              <div class="bg-white bg-opacity-20 rounded-full h-2 mt-1">
+                <div class="bg-white h-2 rounded-full w-3/4"></div>
+              </div>
+              <p class="text-xs mt-1 opacity-90">Level 3 - 750/1000 XP</p>
+            </div>
+          </div>
+
+          <!-- Achievement Badges -->
+          <div class="flex space-x-2">
+            <div
+              class="bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-medium"
+            >
+              💰 Saver
+            </div>
+            <div
+              class="bg-green-400 text-green-900 px-2 py-1 rounded-full text-xs font-medium"
+            >
+              📊 Tracker
+            </div>
+          </div>
+        </div>
+
+        <!-- Story Content -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-4">
+          <!-- Current Quest -->
+          <div
+            class="bg-white rounded-xl p-4 shadow-sm border border-purple-100"
+          >
+            <div class="flex items-center space-x-2 mb-3">
+              <div class="w-5 h-5 flex items-center justify-center">
+                <i class="ri-treasure-map-line text-primary"></i>
+              </div>
+              <h3 class="font-semibold text-gray-800">Current Quest</h3>
+            </div>
+            <div
+              class="bg-gradient-to-r from-primary to-secondary rounded-lg p-4 text-white"
+            >
+              <h4 class="font-medium mb-2">The $5000 Treasure Hunt</h4>
+              <p class="text-sm mb-3 opacity-90">
+                Embark on a 6-month journey to collect 5000 gold coins through
+                smart saving strategies!
+              </p>
+              <div class="bg-white bg-opacity-20 rounded-full h-2 mb-2">
+                <div class="bg-white h-2 rounded-full w-1/6"></div>
+              </div>
+              <p class="text-xs">Month 1 of 6 - $833 collected</p>
+            </div>
+          </div>
+
+          <!-- Interactive Story Card -->
+          <div class="bg-white rounded-xl p-4 shadow-sm border border-blue-100">
+            <div class="flex items-center space-x-2 mb-3">
+              <div class="w-5 h-5 flex items-center justify-center">
+                <i class="ri-book-open-line text-secondary"></i>
+              </div>
+              <h3 class="font-semibold text-gray-800">Your Saving Adventure</h3>
+            </div>
+
+            <!-- Story Illustration -->
+            <div
+              class="bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg p-4 mb-4 text-center"
+            >
+              <div
+                class="w-16 h-16 mx-auto mb-3 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center"
+              >
+                <div class="w-8 h-8 flex items-center justify-center">
+                  <i class="ri-coins-line text-white text-xl"></i>
+                </div>
+              </div>
+              <p class="text-sm text-gray-700">
+                You've discovered the ancient art of automatic savings! Each
+                month, 833 gold coins magically transfer to your treasure chest.
+              </p>
+            </div>
+
+            <!-- Progress Steps -->
+            <div class="space-y-3">
+              <div
+                class="flex items-center space-x-3 p-2 bg-green-50 rounded-lg"
+              >
+                <div
+                  class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0"
+                >
+                  <div class="w-3 h-3 flex items-center justify-center">
+                    <i class="ri-check-line text-white text-xs"></i>
+                  </div>
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-gray-800">
+                    Track Expenses
+                  </p>
+                  <p class="text-xs text-gray-600">+50 XP earned</p>
+                </div>
+              </div>
+              <div
+                class="flex items-center space-x-3 p-2 bg-yellow-50 rounded-lg"
+              >
+                <div
+                  class="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center flex-shrink-0"
+                >
+                  <span class="text-white text-xs font-bold">2</span>
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-gray-800">
+                    Cancel Subscriptions
+                  </p>
+                  <p class="text-xs text-gray-600">In progress...</p>
+                </div>
+              </div>
+
+              <div
+                class="flex items-center space-x-3 p-2 bg-gray-50 rounded-lg opacity-60"
+              >
+                <div
+                  class="w-6 h-6 bg-gray-400 rounded-full flex items-center justify-center flex-shrink-0"
+                >
+                  <span class="text-white text-xs font-bold">3</span>
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-gray-800">
+                    Automate Savings
+                  </p>
+                  <p class="text-xs text-gray-600">Locked</p>
+                </div>
+              </div>
+            </div>
+
+            <button
+              class="w-full mt-4 bg-gradient-to-r from-secondary to-blue-500 text-white py-2 !rounded-button text-sm font-medium whitespace-nowrap hover:from-teal-600 hover:to-blue-600 transition-all"
+            >
+              Continue Adventure
+            </button>
+          </div>
+
+          <!-- Recent Achievements -->
+          <div
+            class="bg-white rounded-xl p-4 shadow-sm border border-green-100"
+          >
+            <div class="flex items-center space-x-2 mb-3">
+              <div class="w-5 h-5 flex items-center justify-center">
+                <i class="ri-trophy-line text-yellow-500"></i>
+              </div>
+              <h3 class="font-semibold text-gray-800">Recent Achievements</h3>
+            </div>
+            <div class="space-y-2">
+              <div
+                class="flex items-center space-x-3 p-2 bg-yellow-50 rounded-lg"
+              >
+                <div class="text-2xl">🏆</div>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-gray-800">
+                    First Quest Started
+                  </p>
+                  <p class="text-xs text-gray-600">+100 XP</p>
+                </div>
+              </div>
+              <div
+                class="flex items-center space-x-3 p-2 bg-blue-50 rounded-lg"
+              >
+                <div class="text-2xl">📊</div>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-gray-800">
+                    Expense Tracker
+                  </p>
+                  <p class="text-xs text-gray-600">+50 XP</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Story Mode Overlay -->
+    <div
+      id="mobileStoryOverlay"
+      class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden lg:hidden"
+    >
+      <div
+        class="absolute bottom-0 left-0 right-0 bg-white rounded-t-xl max-h-[80vh] overflow-y-auto"
+      >
+        <div
+          class="sticky top-0 bg-gradient-to-r from-primary to-secondary p-4 text-white"
+        >
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-semibold">Story Mode</h2>
+            <button
+              id="closeMobileStory"
+              class="w-6 h-6 flex items-center justify-center"
+            >
+              <i class="ri-close-line"></i>
+            </button>
+          </div>
+        </div>
+        <div class="p-4">
+          <!-- Mobile story content would be similar to sidebar content -->
+          <div
+            class="bg-gradient-to-r from-primary to-secondary rounded-lg p-4 text-white mb-4"
+          >
+            <h4 class="font-medium mb-2">The $5000 Treasure Hunt</h4>
+            <p class="text-sm mb-3 opacity-90">
+              Embark on a 6-month journey to collect 5000 gold coins!
+            </p>
+            <div class="bg-white bg-opacity-20 rounded-full h-2">
+              <div class="bg-white h-2 rounded-full w-1/6"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script id="chatFunctionality">
+      document.addEventListener("DOMContentLoaded", function () {
+        const messageInput = document.getElementById("messageInput");
+        const sendButton = document.getElementById("sendButton");
+        const chatContainer = document.getElementById("chatContainer");
+        function addMessage(content, isUser = false) {
+          const messageDiv = document.createElement("div");
+          messageDiv.className = `flex items-start space-x-3 ${isUser ? "justify-end" : ""}`;
+
+          const currentTime = new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+
+          if (isUser) {
+            messageDiv.innerHTML = `
+                              <div class="bg-primary rounded-xl rounded-tr-sm px-4 py-3 max-w-md">
+                                  <p class="text-white">${content}</p>
+                                  <span class="text-xs text-purple-200 mt-2 block">${currentTime}</span>
+                              </div>
+                              <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center flex-shrink-0">
+                                  <div class="w-4 h-4 flex items-center justify-center">
+                                      <i class="ri-user-line text-gray-600 text-sm"></i>
+                                  </div>
+                              </div>
+                          `;
+          } else {
+            messageDiv.innerHTML = `
+                              <div class="w-8 h-8 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center flex-shrink-0">
+                                  <div class="w-4 h-4 flex items-center justify-center">
+                                      <i class="ri-robot-line text-white text-sm"></i>
+                                  </div>
+                              </div>
+                              <div class="bg-white rounded-xl rounded-tl-sm px-4 py-3 max-w-lg shadow-sm">
+                                  <p class="text-gray-800">${content}</p>
+                                  <span class="text-xs text-gray-500 mt-2 block">${currentTime}</span>
+                              </div>
+                          `;
+          }
+
+          chatContainer.appendChild(messageDiv);
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function sendMessage() {
+          const message = messageInput.value.trim();
+          if (message) {
+            addMessage(message, true);
+            messageInput.value = "";
+
+            setTimeout(() => {
+              const responses = [
+                "That's a great question! Let me help you understand this better. Based on your situation, I'd recommend starting with a budget analysis.",
+                "I can definitely help with that! Here are some personalized suggestions based on current market trends and your goals.",
+                "Excellent choice! This is a smart financial move. Let me break down the steps and potential outcomes for you.",
+              ];
+              const randomResponse =
+                responses[Math.floor(Math.random() * responses.length)];
+              addMessage(randomResponse, false);
+            }, 1000);
+          }
+        }
+
+        sendButton.addEventListener("click", sendMessage);
+        messageInput.addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            sendMessage();
+          }
+        });
+      });
+    </script>
+
+    <script id="storyModeToggle">
+      document.addEventListener("DOMContentLoaded", function () {
+        const storySidebar = document.getElementById("storySidebar");
+        const storyModeToggle = document.getElementById("storyModeToggle");
+        const storyModeBtn = document.getElementById("storyModeBtn");
+        const mobileStoryOverlay = document.getElementById("mobileStoryOverlay");
+        const closeMobileStory = document.getElementById("closeMobileStory");
+
+        function toggleStoryMode() {
+          if (window.innerWidth >= 1024) {
+            storySidebar.classList.toggle("hidden");
+            storySidebar.classList.toggle("flex");
+          } else {
+            mobileStoryOverlay.classList.remove("hidden");
+          }
+        }
+
+        storyModeToggle?.addEventListener("click", toggleStoryMode);
+        storyModeBtn?.addEventListener("click", toggleStoryMode);
+
+        closeMobileStory?.addEventListener("click", function () {
+          mobileStoryOverlay.classList.add("hidden");
+        });
+
+        mobileStoryOverlay?.addEventListener("click", function (e) {
+          if (e.target === mobileStoryOverlay) {
+            mobileStoryOverlay.classList.add("hidden");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

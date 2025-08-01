@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Monthly Tax Saving Challenge</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Poppins:wght@300;400;600;700&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 2s infinite alternate;
+    }
+
+    @keyframes twinkle {
+      0% { opacity: 0.3; transform: scale(1); }
+      100% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .game-container {
+      position: relative;
+      z-index: 10;
+      max-width: 1400px;
+      margin: 20px auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 25px;
+      min-height: calc(100vh - 40px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      animation: slideIn 0.8s ease-out;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .header {
+      text-align: center;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 25px 25px 0 0;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+      animation: shine 3s infinite;
+    }
+
+    .game-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2.5rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 2;
+    }
+
+    .game-content {
+      flex: 1;
+      display: flex;
+      min-height: 600px;
+    }
+
+    .left-panel {
+      flex: 1;
+      background: linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%);
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .left-panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+      animation: patternMove 20s linear infinite;
+    }
+
+    @keyframes patternMove {
+      0% { transform: translateX(0) translateY(0); }
+      100% { transform: translateX(60px) translateY(60px); }
+    }
+
+    .character-display {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .character {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      animation: float 3s ease-in-out infinite;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      margin-bottom: 20px;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(5deg); }
+    }
+
+    .user-stats {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 300px;
+      margin-top: 20px;
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+    }
+
+    .stat-label {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .stat-value {
+      font-weight: 700;
+      color: #fc4a1a;
+      font-size: 1.2rem;
+    }
+
+    .tax-saved-value {
+      color: #f7b733;
+      font-weight: 700;
+    }
+
+    .budget-remaining {
+      background: linear-gradient(135deg, #fc4a1a, #f7b733);
+      color: white;
+      border-radius: 15px;
+      padding: 15px;
+      text-align: center;
+      margin-top: 15px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .right-panel {
+      flex: 1.5;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 0 0 25px 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .month-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .month-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .month-budget {
+      font-size: 1.3rem;
+      color: #fc4a1a;
+      background: rgba(252, 74, 26, 0.1);
+      padding: 10px 20px;
+      border-radius: 25px;
+      display: inline-block;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      flex: 1;
+      max-height: calc(100vh - 300px);
+      overflow-y: auto;
+    }
+
+    .option-card {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 15px;
+      padding: 15px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid transparent;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 120px;
+      max-height: 140px;
+    }
+
+    .option-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .option-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .option-card:hover::before {
+      left: 100%;
+    }
+
+    .high-saving-card {
+      background: linear-gradient(135deg, #fc4a1a, #f7b733);
+    }
+
+    .medium-saving-card {
+      background: linear-gradient(135deg, #f093fb, #f5576c);
+    }
+
+    .low-saving-card {
+      background: linear-gradient(135deg, #4ecdc4, #44a08d);
+    }
+
+    .option-emoji {
+      font-size: 1.8rem;
+      text-align: center;
+      margin-bottom: 8px;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-5px); }
+    }
+
+    .option-label {
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 8px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.2;
+    }
+
+    .option-amount {
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-align: center;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      background: rgba(255, 255, 255, 0.2);
+      padding: 5px 10px;
+      border-radius: 12px;
+    }
+
+    .option-tax-save {
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 3px 8px;
+      border-radius: 8px;
+    }
+
+    .end-screen {
+      display: none;
+      text-align: center;
+      animation: celebration 0.8s ease-out;
+      padding: 50px;
+    }
+
+    @keyframes celebration {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .final-character {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fc4a1a, #f7b733);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6rem;
+      margin: 0 auto 30px;
+      animation: victory 2s ease-in-out infinite;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    @keyframes victory {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.1) rotate(10deg); }
+    }
+
+    .final-score {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #fc4a1a;
+      margin: 20px 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .celebration-text {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .restart-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .restart-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .progress-indicator {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+    }
+
+    .progress-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .progress-dot.active {
+      background: white;
+      transform: scale(1.3);
+    }
+
+    .input-panel {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 50px;
+      border-radius: 0 0 25px 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .input-form {
+      max-width: 600px;
+      width: 100%;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    @media (max-width: 1024px) {
+      .game-content {
+        flex-direction: column;
+      }
+      
+      .left-panel {
+        min-height: 250px;
+      }
+      
+      .character {
+        width: 120px;
+        height: 120px;
+        font-size: 4rem;
+      }
+      
+      .options-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-height: 400px;
+      }
+
+      .option-card {
+        min-height: 110px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .game-container {
+        margin: 10px;
+      }
+      
+      .game-title {
+        font-size: 2rem;
+      }
+      
+      .left-panel, .right-panel {
+        padding: 20px;
+      }
+
+      .options-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .option-card {
+        min-height: 100px;
+        padding: 12px;
+      }
+
+      .option-emoji {
+        font-size: 1.5rem;
+      }
+
+      .option-label {
+        font-size: 0.9rem;
+      }
+
+      .option-amount {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" id="stars"></div>
+  
+  <div class="game-container">
+    <div class="header">
+      <h1 class="game-title">📊 Monthly Tax Saving Challenge</h1>
+    </div>
+
+    <!-- User Input Screen -->
+    <div id="inputScreen" class="game-content">
+      <div class="input-panel">
+        <h2 style="text-align: center; margin-bottom: 30px; color: #333;">Tell us about your tax planning needs</h2>
+        <div class="input-form">
+          <textarea 
+            id="userPrompt" 
+            placeholder="E.g., I'm a software engineer earning 12 LPA, want to save maximum tax while building a corpus for buying a house in 3 years..."
+            style="width: 100%; height: 150px; padding: 15px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; resize: vertical; margin-bottom: 20px;"
+          ></textarea>
+          <button 
+            id="generateGameBtn" 
+            style="width: 100%; padding: 15px; background: linear-gradient(135deg, #fc4a1a, #f7b733); color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-bottom: 15px;"
+            onclick="generateCustomGame()"
+          >
+            🎯 Generate My Tax Game
+          </button>
+          <button 
+            id="defaultGameBtn" 
+            style="width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;"
+            onclick="startDefaultGame()"
+          >
+            🚀 Start with Default Settings
+          </button>
+          <div id="loadingMessage" style="display: none; text-align: center; margin-top: 20px; color: #666;">
+            <div style="display: inline-block; width: 20px; height: 20px; border: 3px solid #f3f3f3; border-top: 3px solid #fc4a1a; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 10px;"></div>
+            Generating your personalized tax game...
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="gameScreen" class="game-content" style="display: none;">`
+      <div class="left-panel">
+        <div class="character-display">
+          <div class="character" id="character">🧾</div>
+          <div class="user-stats">
+            <div class="stat-item">
+              <span class="stat-label">Month:</span>
+              <span class="stat-value" id="currentMonth">1 / 10</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Total Tax Saved:</span>
+              <span class="stat-value tax-saved-value" id="totalTaxSaved">₹0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Investments Made:</span>
+              <span class="stat-value" id="totalInvestments">₹0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Tax Rate:</span>
+              <span class="stat-value" id="taxRate">30%</span>
+            </div>
+            <div class="budget-remaining" id="budgetRemaining">
+              Monthly Income: ₹0
+            </div>
+          </div>
+        </div>
+        
+        <div class="progress-indicator" id="progressIndicator"></div>
+      </div>
+
+      <div class="right-panel">
+        <div class="month-header">
+          <div class="month-title" id="monthTitle">Month 1</div>
+          <div class="month-budget" id="monthBudget">Monthly Income: ₹80,000</div>
+        </div>
+        
+        <div class="options-grid" id="optionsGrid"></div>
+      </div>
+    </div>
+
+    <div class="end-screen" id="endScreen">
+      <div class="final-character">🎯</div>
+      <h2 style="font-size: 2.5rem; color: #fc4a1a; margin-bottom: 20px;">Tax Planning Complete!</h2>
+      <p class="celebration-text">You've optimized your taxes for 10 months!</p>
+      <div class="final-score">Total Tax Saved: ₹<span id="finalTaxSaved">0</span></div>
+      <div class="final-score" style="color: #f7b733;">Total Investments: ₹<span id="finalInvestments">0</span></div>
+      <p style="font-size: 1.2rem; margin: 30px 0; color: #666;" id="finalMessage"></p>
+      <button class="restart-btn" onclick="restartGame()">📊 Plan Again</button>
+    </div>
+  </div>
+
+  <script>
+    // Game state
+    let month = 1;
+    let totalTaxSaved = 0;
+    let totalInvestments = 0;
+    const totalMonths = 10;
+    const taxRate = 0.30; // 30% tax bracket
+    
+    // Dynamic data from API
+    let monthlyIncomes = {};
+    let monthlyOptions = {};
+
+    // Default fallback data
+    const defaultMonthlyIncomes = {
+      1: 80000, 2: 85000, 3: 90000, 4: 82000, 5: 88000,
+      6: 95000, 7: 87000, 8: 92000, 9: 89000, 10: 100000
+    };
+
+    const defaultMonthlyOptions = {
+      1: {
+        high: [
+          { label: "ELSS Mutual Funds", amount: 50000, emoji: "📈", section: "80C", taxSaving: 15000 },
+          { label: "PPF Investment", amount: 150000, emoji: "🛡️", section: "80C", taxSaving: 45000 },
+          { label: "Life Insurance Premium", amount: 100000, emoji: "🏥", section: "80C", taxSaving: 30000 }
+        ],
+        medium: [
+          { label: "NSC Investment", amount: 30000, emoji: "📜", section: "80C", taxSaving: 9000 },
+          { label: "ULIP Premium", amount: 25000, emoji: "🔗", section: "80C", taxSaving: 7500 },
+          { label: "Tax Saver FD", amount: 20000, emoji: "🏦", section: "80C", taxSaving: 6000 }
+        ],
+        low: [
+          { label: "EPF Contribution", amount: 12000, emoji: "👔", section: "80C", taxSaving: 3600 },
+          { label: "Home Loan Principal", amount: 15000, emoji: "🏠", section: "80C", taxSaving: 4500 },
+          { label: "Sukanya Samriddhi", amount: 10000, emoji: "👧", section: "80C", taxSaving: 3000 }
+        ]
+      },
+      2: {
+        high: [
+          { label: "Health Insurance Premium", amount: 25000, emoji: "🏥", section: "80D", taxSaving: 7500 },
+          { label: "Parents Health Insurance", amount: 50000, emoji: "👴", section: "80D", taxSaving: 15000 },
+          { label: "NPS Investment", amount: 50000, emoji: "🎯", section: "80CCD(1B)", taxSaving: 15000 }
+        ],
+        medium: [
+          { label: "Education Loan Interest", amount: 30000, emoji: "🎓", section: "80E", taxSaving: 9000 },
+          { label: "Donation to PM Relief Fund", amount: 20000, emoji: "🤝", section: "80G", taxSaving: 10000 },
+          { label: "Medical Treatment", amount: 40000, emoji: "💊", section: "80DDB", taxSaving: 12000 }
+        ],
+        low: [
+          { label: "Interest on Housing Loan", amount: 25000, emoji: "🏡", section: "24", taxSaving: 7500 },
+          { label: "Rent Paid (HRA)", amount: 15000, emoji: "🏠", section: "10(13A)", taxSaving: 4500 },
+          { label: "Professional Tax", amount: 2500, emoji: "💼", section: "16(iii)", taxSaving: 750 }
+        ]
+      },
+      3: {
+        high: [
+          { label: "Mutual Fund SIP", amount: 45000, emoji: "📊", section: "80C", taxSaving: 13500 },
+          { label: "Voluntary PF", amount: 35000, emoji: "🏪", section: "80C", taxSaving: 10500 },
+          { label: "Infrastructure Bonds", amount: 20000, emoji: "🏗️", section: "80CCF", taxSaving: 6000 }
+        ],
+        medium: [
+          { label: "Home Loan Interest", amount: 50000, emoji: "🏡", section: "24(b)", taxSaving: 15000 },
+          { label: "Standard Deduction", amount: 50000, emoji: "📄", section: "16(ia)", taxSaving: 15000 },
+          { label: "Books & Journals", amount: 5000, emoji: "📚", section: "Professional", taxSaving: 1500 }
+        ],
+        low: [
+          { label: "Medical Insurance", amount: 15000, emoji: "🏥", section: "80D", taxSaving: 4500 },
+          { label: "Uniform & Equipment", amount: 8000, emoji: "👔", section: "Professional", taxSaving: 2400 },
+          { label: "Transport Allowance", amount: 19200, emoji: "🚌", section: "10(14)", taxSaving: 5760 }
+        ]
+      }
+    };
+
+    // Function to generate default data for all 10 months
+    function generateDefaultData() {
+      const baseOptions = {
+        high: [
+          { label: "ELSS Mutual Funds", amount: 50000, emoji: "📈", section: "80C", taxSaving: 15000 },
+          { label: "PPF Investment", amount: 150000, emoji: "🛡️", section: "80C", taxSaving: 45000 },
+          { label: "Life Insurance Premium", amount: 100000, emoji: "🏥", section: "80C", taxSaving: 30000 }
+        ],
+        medium: [
+          { label: "NSC Investment", amount: 30000, emoji: "📜", section: "80C", taxSaving: 9000 },
+          { label: "ULIP Premium", amount: 25000, emoji: "🔗", section: "80C", taxSaving: 7500 },
+          { label: "Tax Saver FD", amount: 20000, emoji: "🏦", section: "80C", taxSaving: 6000 }
+        ],
+        low: [
+          { label: "EPF Contribution", amount: 12000, emoji: "👔", section: "80C", taxSaving: 3600 },
+          { label: "Home Loan Principal", amount: 15000, emoji: "🏠", section: "80C", taxSaving: 4500 },
+          { label: "Sukanya Samriddhi", amount: 10000, emoji: "👧", section: "80C", taxSaving: 3000 }
+        ]
+      };
+
+      const fullOptions = {};
+      for (let i = 1; i <= 10; i++) {
+        fullOptions[i] = JSON.parse(JSON.stringify(baseOptions)); // Deep copy
+      }
+      return fullOptions;
+    }
+
+    async function generateCustomGame() {
+      const userPrompt = document.getElementById('userPrompt').value.trim();
+      if (!userPrompt) {
+        alert('Please enter your tax planning requirements!');
+        return;
+      }
+
+      const loadingMessage = document.getElementById('loadingMessage');
+      const generateBtn = document.getElementById('generateGameBtn');
+      
+      loadingMessage.style.display = 'block';
+      generateBtn.disabled = true;
+
+      try {
+        const response = await fetch('/generate-tax-game', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message: userPrompt })
+        });
+        console.log('API response:', response);
+        console.log('User prompt:', userPrompt);
+
+        if (response.ok) {
+          const gameData = await response.json();
+          monthlyIncomes = gameData.monthlyIncomes || defaultMonthlyIncomes;
+          monthlyOptions = gameData.monthlyOptions || generateDefaultData();
+          
+          // Show success message if data was customized
+          if (gameData.monthlyIncomes && gameData.monthlyOptions && Object.keys(gameData.monthlyOptions).length > 1) {
+            console.log('🎯 Custom tax game generated successfully!');
+          }
+        } else {
+          throw new Error('API call failed');
+        }
+      } catch (error) {
+        console.error('Error generating custom game:', error);
+        // Use default data on error
+        monthlyIncomes = defaultMonthlyIncomes;
+        monthlyOptions = generateDefaultData();
+      }
+
+      loadingMessage.style.display = 'none';
+      generateBtn.disabled = false;
+      
+      // Start the game
+      startGame();
+    }
+
+    function startDefaultGame() {
+      // Use default data
+      monthlyIncomes = defaultMonthlyIncomes;
+      monthlyOptions = generateDefaultData();
+      
+      // Start the game
+      startGame();
+    }
+
+    function startGame() {
+      document.getElementById('inputScreen').style.display = 'none';
+      document.getElementById('gameScreen').style.display = 'flex';
+      
+      // Reset game state
+      month = 1;
+      totalTaxSaved = 0;
+      totalInvestments = 0;
+      
+      // Initialize game
+      updateUI();
+      renderOptions();
+    }
+
+    const characters = ['🧾', '📊', '💰', '🎯', '📈', '🏦'];
+    let currentCharacter = characters[Math.floor(Math.random() * characters.length)];
+
+    function createStars() {
+      const starsContainer = document.getElementById('stars');
+      for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.width = Math.random() * 3 + 1 + 'px';
+        star.style.height = star.style.width;
+        star.style.animationDelay = Math.random() * 2 + 's';
+        starsContainer.appendChild(star);
+      }
+    }
+
+    function createProgressIndicator() {
+      const progressIndicator = document.getElementById('progressIndicator');
+      progressIndicator.innerHTML = '';
+      for (let i = 1; i <= totalMonths; i++) {
+        const dot = document.createElement('div');
+        dot.className = `progress-dot ${i <= month ? 'active' : ''}`;
+        progressIndicator.appendChild(dot);
+      }
+    }
+
+    function updateUI() {
+      document.getElementById('currentMonth').textContent = `${month} / ${totalMonths}`;
+      document.getElementById('totalTaxSaved').textContent = `₹${totalTaxSaved.toLocaleString()}`;
+      document.getElementById('totalInvestments').textContent = `₹${totalInvestments.toLocaleString()}`;
+      document.getElementById('taxRate').textContent = `${(taxRate * 100)}%`;
+      document.getElementById('monthTitle').textContent = `Month ${month}`;
+      document.getElementById('monthBudget').textContent = `Monthly Income: ₹${monthlyIncomes[month].toLocaleString()}`;
+      document.getElementById('budgetRemaining').textContent = `Monthly Income: ₹${monthlyIncomes[month].toLocaleString()}`;
+      createProgressIndicator();
+    }
+
+    function renderOptions() {
+      const optionsGrid = document.getElementById('optionsGrid');
+      optionsGrid.innerHTML = '';
+      
+      const options = monthlyOptions[month];
+      
+      // Render high saving options
+      options.high.forEach((option, index) => {
+        const card = document.createElement('div');
+        card.className = 'option-card high-saving-card';
+        card.style.animationDelay = (index * 0.1) + 's';
+        card.innerHTML = `
+          <div class="option-emoji">${option.emoji}</div>
+          <div class="option-label">${option.label}</div>
+          <div class="option-amount">₹${option.amount.toLocaleString()}</div>
+          <div class="option-tax-save">Save ₹${option.taxSaving.toLocaleString()}</div>
+        `;
+        card.onclick = () => selectOption(option);
+        optionsGrid.appendChild(card);
+      });
+
+      // Render medium saving options
+      options.medium.forEach((option, index) => {
+        const card = document.createElement('div');
+        card.className = 'option-card medium-saving-card';
+        card.style.animationDelay = ((options.high.length + index) * 0.1) + 's';
+        card.innerHTML = `
+          <div class="option-emoji">${option.emoji}</div>
+          <div class="option-label">${option.label}</div>
+          <div class="option-amount">₹${option.amount.toLocaleString()}</div>
+          <div class="option-tax-save">Save ₹${option.taxSaving.toLocaleString()}</div>
+        `;
+        card.onclick = () => selectOption(option);
+        optionsGrid.appendChild(card);
+      });
+
+      // Render low saving options
+      options.low.forEach((option, index) => {
+        const card = document.createElement('div');
+        card.className = 'option-card low-saving-card';
+        card.style.animationDelay = ((options.high.length + options.medium.length + index) * 0.1) + 's';
+        card.innerHTML = `
+          <div class="option-emoji">${option.emoji}</div>
+          <div class="option-label">${option.label}</div>
+          <div class="option-amount">₹${option.amount.toLocaleString()}</div>
+          <div class="option-tax-save">Save ₹${option.taxSaving.toLocaleString()}</div>
+        `;
+        card.onclick = () => selectOption(option);
+        optionsGrid.appendChild(card);
+      });
+    }
+
+    function selectOption(option) {
+      // Add to investments and tax savings
+      totalInvestments += option.amount;
+      totalTaxSaved += option.taxSaving;
+
+      // Visual feedback
+      const character = document.getElementById('character');
+      character.style.animation = 'none';
+      setTimeout(() => {
+        character.style.animation = 'float 3s ease-in-out infinite';
+      }, 100);
+
+      setTimeout(() => {
+        month++;
+        if (month > totalMonths) {
+          endGame();
+        } else {
+          updateUI();
+          renderOptions();
+        }
+      }, 1000);
+    }
+
+    function endGame() {
+      document.getElementById('gameScreen').style.display = 'none';
+      document.getElementById('endScreen').style.display = 'block';
+      document.getElementById('finalTaxSaved').textContent = totalTaxSaved.toLocaleString();
+      document.getElementById('finalInvestments').textContent = totalInvestments.toLocaleString();
+      
+      const finalMessage = document.getElementById('finalMessage');
+      const totalIncome = Object.values(monthlyIncomes).reduce((a, b) => a + b, 0);
+      const savingsRate = (totalTaxSaved / (totalIncome * taxRate)) * 100;
+      
+      if (savingsRate >= 80) {
+        finalMessage.textContent = "Outstanding! You're a tax optimization expert! 🌟";
+      } else if (savingsRate >= 60) {
+        finalMessage.textContent = "Excellent planning! Great tax management! 💪";
+      } else if (savingsRate >= 40) {
+        finalMessage.textContent = "Good savings! Room for more optimization! 👍";
+      } else if (savingsRate >= 20) {
+        finalMessage.textContent = "Decent start! Learn more tax saving strategies! 📚";
+      } else {
+        finalMessage.textContent = "Time to study tax laws! More savings possible! 🎯";
+      }
+    }
+
+    function restartGame() {
+      month = 1;
+      totalTaxSaved = 0;
+      totalInvestments = 0;
+      currentCharacter = characters[Math.floor(Math.random() * characters.length)];
+      document.getElementById('character').textContent = currentCharacter;
+      document.getElementById('endScreen').style.display = 'none';
+      document.getElementById('gameScreen').style.display = 'none';
+      document.getElementById('inputScreen').style.display = 'flex';
+      document.getElementById('userPrompt').value = ''; // Clear the input
+    }
+
+    // Initialize game
+    createStars();
+    document.getElementById('character').textContent = currentCharacter;
+    
+    // Set default data
+    monthlyIncomes = defaultMonthlyIncomes;
+    monthlyOptions = generateDefaultData();
+    
+    // Show input screen initially
+    // updateUI();
+    // renderOptions();
+  </script>
+</body>
+</html>
