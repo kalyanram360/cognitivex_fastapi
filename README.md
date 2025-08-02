@@ -1,4 +1,4 @@
-# Tax Game with Gemini AI Integration
+# Finance chatbot with game based application
 
 ## Setup Instructions
 
