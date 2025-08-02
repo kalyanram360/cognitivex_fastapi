@@ -80,11 +80,11 @@ async def generate_tax_game(query: Query):
         print("🚀 Calling Gemini API...")
         genai.configure(api_key=api_key)
         
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-2.5-pro")
         response = model.generate_content(full_prompt)
         
         print(f"📥 Gemini response length: {len(response.text) if response.text else 0}")
-        print(f"📄 Response preview: {response.text[:200] if response.text else 'No text'}...")
+        print(f"📄 Response preview: {response.text[:1000] if response.text else 'No text'}...")
         
         # Parse JSON string from Gemini response safely
         import json, re
