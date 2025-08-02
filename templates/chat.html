@@ -433,9 +433,13 @@
         const messageInput = document.getElementById("messageInput");
         const sendButton = document.getElementById("sendButton");
         const chatContainer = document.getElementById("chatContainer");
-        function addMessage(content, isUser = false) {
+        function addMessage(content, isUser = false, messageId = null) {
           const messageDiv = document.createElement("div");
           messageDiv.className = `flex items-start space-x-3 ${isUser ? "justify-end" : ""}`;
+          
+          if (messageId) {
+            messageDiv.setAttribute('data-message-id', messageId);
+          }
 
           const currentTime = new Date().toLocaleTimeString([], {
             hour: "2-digit",
@@ -478,17 +482,109 @@
             addMessage(message, true);
             messageInput.value = "";
 
-            setTimeout(() => {
-              const responses = [
-                "That's a great question! Let me help you understand this better. Based on your situation, I'd recommend starting with a budget analysis.",
-                "I can definitely help with that! Here are some personalized suggestions based on current market trends and your goals.",
-                "Excellent choice! This is a smart financial move. Let me break down the steps and potential outcomes for you.",
-              ];
-              const randomResponse =
-                responses[Math.floor(Math.random() * responses.length)];
-              addMessage(randomResponse, false);
-            }, 1000);
+            // Add loading message
+            const loadingId = Date.now();
+            addMessage('Thinking...', false, loadingId);
+
+            // Call the chat API
+            fetch('/chat', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+              // Remove loading message
+              const loadingElement = document.querySelector(`[data-message-id="${loadingId}"]`);
+              if (loadingElement) {
+                loadingElement.remove();
+              }
+
+              // Add bot response
+              addBotResponseWithButtons(data.response, data.category);
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              // Remove loading message
+              const loadingElement = document.querySelector(`[data-message-id="${loadingId}"]`);
+              if (loadingElement) {
+                loadingElement.remove();
+              }
+              addMessage('Sorry, I encountered an error. Please try again.', false);
+            });
           }
+        }
+
+        function addBotResponseWithButtons(response, category) {
+          const currentTime = new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+
+          const messageDiv = document.createElement("div");
+          messageDiv.className = "flex items-start space-x-3";
+
+          let gameButtons = '';
+          if (category === 'tax') {
+            gameButtons = `
+              <div class="mt-3">
+                <button onclick="window.location.href='/tax-game'" 
+                        class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg text-sm hover:from-blue-600 hover:to-purple-700 transition-all mr-2">
+                  🎯 Play Tax Game
+                </button>
+              </div>`;
+          } else if (category === 'investment') {
+            gameButtons = `
+              <div class="mt-3">
+                <button onclick="window.location.href='/investment-game'" 
+                        class="bg-gradient-to-r from-green-500 to-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:from-green-600 hover:to-blue-600 transition-all mr-2">
+                  📈 Play Investment Game
+                </button>
+              </div>`;
+          } else if (category === 'savings') {
+            gameButtons = `
+              <div class="mt-3">
+                <button onclick="window.location.href='/savings-game'" 
+                        class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-4 py-2 rounded-lg text-sm hover:from-yellow-600 hover:to-orange-600 transition-all mr-2">
+                  💰 Play Savings Game
+                </button>
+              </div>`;
+          } else if (category === 'general') {
+            gameButtons = `
+              <div class="mt-3 space-y-2">
+                <div class="text-sm text-gray-600 mb-2">Try our interactive games:</div>
+                <button onclick="window.location.href='/tax-game'" 
+                        class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-3 py-1 rounded text-xs hover:from-blue-600 hover:to-purple-700 transition-all mr-2">
+                  🎯 Tax Game
+                </button>
+                <button onclick="window.location.href='/investment-game'" 
+                        class="bg-gradient-to-r from-green-500 to-blue-500 text-white px-3 py-1 rounded text-xs hover:from-green-600 hover:to-blue-600 transition-all mr-2">
+                  📈 Investment Game
+                </button>
+                <button onclick="window.location.href='/savings-game'" 
+                        class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-3 py-1 rounded text-xs hover:from-yellow-600 hover:to-orange-600 transition-all">
+                  💰 Savings Game
+                </button>
+              </div>`;
+          }
+
+          messageDiv.innerHTML = `
+            <div class="w-8 h-8 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center flex-shrink-0">
+              <div class="w-4 h-4 flex items-center justify-center">
+                <i class="ri-robot-line text-white text-sm"></i>
+              </div>
+            </div>
+            <div class="bg-white rounded-xl rounded-tl-sm px-4 py-3 max-w-lg shadow-sm">
+              <p class="text-gray-800">${response}</p>
+              ${gameButtons}
+              <span class="text-xs text-gray-500 mt-2 block">${currentTime}</span>
+            </div>
+          `;
+
+          chatContainer.appendChild(messageDiv);
+          chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
         sendButton.addEventListener("click", sendMessage);

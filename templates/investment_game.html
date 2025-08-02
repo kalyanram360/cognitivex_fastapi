@@ -493,7 +493,53 @@
       <h1 class="game-title">📈 Monthly Investment Challenge</h1>
     </div>
 
-    <div id="gameScreen" class="game-content">
+    <!-- User Input Screen -->
+    <div id="userInputScreen" class="game-content">
+      <div class="left-panel">
+        <div class="character-display">
+          <div class="character">💡</div>
+          <div class="user-stats">
+            <div style="text-align: center; color: #333;">
+              <h3 style="margin-bottom: 15px; color: #11998e;">Tell us about your investment goals!</h3>
+              <p style="font-size: 0.95rem; line-height: 1.4; margin-bottom: 20px;">
+                Share your investment preferences, risk appetite, monthly budget, and financial goals. 
+                We'll create a personalized 10-month investment challenge just for you!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <div class="month-header">
+          <div class="month-title">Share Your Investment Vision</div>
+          <div class="month-budget">Personalized Investment Planning</div>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 400px; gap: 20px;">
+          <textarea 
+            id="userPrompt" 
+            placeholder="Example: I'm 28 years old, earn ₹80,000 monthly, want to invest ₹15,000 per month for retirement planning. I prefer a mix of safe and moderate-risk investments. My goal is to build a corpus for buying a house in 5 years..."
+            style="width: 100%; max-width: 500px; height: 150px; padding: 15px; border: 2px solid #11998e; border-radius: 15px; font-size: 1rem; resize: vertical; font-family: 'Poppins', sans-serif;"
+          ></textarea>
+          
+          <button 
+            id="generateGameBtn"
+            style="background: linear-gradient(135deg, #11998e, #38ef7d); color: white; border: none; padding: 15px 40px; font-size: 1.2rem; font-weight: 600; border-radius: 25px; cursor: pointer; transition: all 0.3s ease;"
+            onclick="generateCustomGame()"
+          >
+            🚀 Create My Investment Challenge
+          </button>
+          
+          <div id="loadingMessage" style="display: none; text-align: center; color: #11998e; font-weight: 600;">
+            <div style="margin-bottom: 10px;">🤖 AI is analyzing your goals...</div>
+            <div style="font-size: 0.9rem; color: #666;">Creating personalized investment scenarios</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="gameScreen" class="game-content" style="display: none;">
       <div class="left-panel">
         <div class="character-display">
           <div class="character" id="character">📊</div>
@@ -735,6 +781,109 @@
     const characters = ['📊', '📈', '💹', '🎯', '💰', '📋'];
     let currentCharacter = characters[Math.floor(Math.random() * characters.length)];
 
+    // Function to generate custom investment game based on user input
+    async function generateCustomGame() {
+      const userPrompt = document.getElementById('userPrompt').value.trim();
+      
+      if (!userPrompt) {
+        alert('Please share your investment goals first!');
+        return;
+      }
+
+      const generateBtn = document.getElementById('generateGameBtn');
+      const loadingMessage = document.getElementById('loadingMessage');
+      
+      // Show loading state
+      generateBtn.style.display = 'none';
+      loadingMessage.style.display = 'block';
+
+      try {
+        const response = await fetch('/generate-investment-game', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message: userPrompt })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to generate game');
+        }
+
+        const gameData = await response.json();
+        
+        // Update game data with API response
+        Object.assign(monthlyBudgets, gameData.monthlyBudgets);
+        Object.assign(monthlyOptions, gameData.monthlyOptions);
+        
+        // Hide input screen and show game
+        document.getElementById('userInputScreen').style.display = 'none';
+        document.getElementById('gameScreen').style.display = 'flex';
+        
+        // Initialize the game
+        initializeGame();
+        
+      } catch (error) {
+        console.error('Error generating investment game:', error);
+        
+        // Hide loading and show button again
+        loadingMessage.style.display = 'none';
+        generateBtn.style.display = 'block';
+        
+        // Show fallback message and start with default data
+        alert('Using default investment scenarios. Game starting now!');
+        document.getElementById('userInputScreen').style.display = 'none';
+        document.getElementById('gameScreen').style.display = 'flex';
+        initializeGame();
+      }
+    }
+
+    function initializeGame() {
+      // Create the game UI
+      document.getElementById('gameScreen').innerHTML = `
+        <div class="left-panel">
+          <div class="character-display">
+            <div class="character" id="character">${currentCharacter}</div>
+            <div class="user-stats">
+              <div class="stat-item">
+                <span class="stat-label">Month:</span>
+                <span class="stat-value" id="currentMonth">1 / 10</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Total Invested:</span>
+                <span class="stat-value" id="totalInvested">₹0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Portfolio Value:</span>
+                <span class="stat-value growth-value" id="portfolioValue">₹0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Total Growth:</span>
+                <span class="stat-value growth-value" id="totalGrowth">₹0</span>
+              </div>
+              <div class="budget-remaining" id="budgetRemaining">
+                Monthly Budget: ₹0
+              </div>
+            </div>
+          </div>
+          
+          <div class="progress-indicator" id="progressIndicator"></div>
+        </div>
+
+        <div class="right-panel">
+          <div class="month-header">
+            <div class="month-title" id="monthTitle">Month 1</div>
+            <div class="month-budget" id="monthBudget">Investment Budget: ₹15,000</div>
+          </div>
+          
+          <div class="options-grid" id="optionsGrid"></div>
+        </div>
+      `;
+      
+      updateUI();
+      renderOptions();
+    }
+
     function createStars() {
       const starsContainer = document.getElementById('stars');
       for (let i = 0; i < 50; i++) {
@@ -898,11 +1047,8 @@
       renderOptions();
     }
 
-    // Initialize game
+    // Initialize stars when page loads
     createStars();
-    document.getElementById('character').textContent = currentCharacter;
-    updateUI();
-    renderOptions();
   </script>
 </body>
 </html>

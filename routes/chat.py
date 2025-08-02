@@ -11,3 +11,11 @@ async def load_chat(request: Request):
 @router.get("/tax-game")
 async def load_tax_game(request: Request):
     return templates.TemplateResponse("taxte_game.html", {"request": request})
+
+@router.get("/savings-game")
+async def load_savings_game(request: Request):
+    return templates.TemplateResponse("savings_game_new.html", {"request": request})
+
+@router.get("/investment-game")
+async def load_investment_game(request: Request):
+    return templates.TemplateResponse("investment_game.html", {"request": request})

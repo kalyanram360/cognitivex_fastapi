@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Monthly Budget Challenge</title>
+  <title>Monthly Savings Challenge</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Poppins:wght@300;400;600;700&display=swap');
     
@@ -15,7 +15,7 @@
 
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
       min-height: 100vh;
       overflow-x: hidden;
     }
@@ -65,7 +65,7 @@
     .header {
       text-align: center;
       padding: 20px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #43cea2, #185a9d);
       border-radius: 25px 25px 0 0;
       color: white;
       position: relative;
@@ -99,7 +99,7 @@
 
     .left-panel {
       flex: 1;
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      background: linear-gradient(135deg, #20bf6b 0%, #01a3a4 100%);
       padding: 30px;
       display: flex;
       flex-direction: column;
@@ -177,12 +177,17 @@
 
     .stat-value {
       font-weight: 700;
-      color: #667eea;
+      color: #20bf6b;
       font-size: 1.2rem;
     }
 
+    .growth-value {
+      color: #01a3a4;
+      font-weight: 700;
+    }
+
     .budget-remaining {
-      background: linear-gradient(135deg, #4ecdc4, #44a08d);
+      background: linear-gradient(135deg, #20bf6b, #01a3a4);
       color: white;
       border-radius: 15px;
       padding: 15px;
@@ -216,8 +221,8 @@
 
     .month-budget {
       font-size: 1.3rem;
-      color: #667eea;
-      background: rgba(102, 126, 234, 0.1);
+      color: #20bf6b;
+      background: rgba(32, 191, 107, 0.1);
       padding: 10px 20px;
       border-radius: 25px;
       display: inline-block;
@@ -233,7 +238,7 @@
     }
 
     .option-card {
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #43cea2, #185a9d);
       border-radius: 15px;
       padding: 15px;
       color: white;
@@ -270,12 +275,16 @@
       left: 100%;
     }
 
-    .spend-card {
-      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    .high-savings-card {
+      background: linear-gradient(135deg, #20bf6b, #01a3a4);
     }
 
-    .save-card {
-      background: linear-gradient(135deg, #4ecdc4, #44a08d);
+    .medium-savings-card {
+      background: linear-gradient(135deg, #00d2d3, #54a0ff);
+    }
+
+    .low-savings-card {
+      background: linear-gradient(135deg, #ff9ff3, #f368e0);
     }
 
     .option-emoji {
@@ -313,6 +322,15 @@
       border-radius: 12px;
     }
 
+    .option-growth {
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 3px 8px;
+      border-radius: 8px;
+    }
+
     .end-screen {
       display: none;
       text-align: center;
@@ -330,7 +348,7 @@
       width: 200px;
       height: 200px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #4ecdc4, #44a08d);
+      background: linear-gradient(135deg, #20bf6b, #01a3a4);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -348,7 +366,7 @@
     .final-score {
       font-size: 3rem;
       font-weight: 700;
-      color: #4ecdc4;
+      color: #20bf6b;
       margin: 20px 0;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     }
@@ -360,7 +378,7 @@
     }
 
     .restart-btn {
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #43cea2, #185a9d);
       color: white;
       border: none;
       padding: 15px 40px;
@@ -472,13 +490,67 @@
   
   <div class="game-container">
     <div class="header">
-      <h1 class="game-title">💰 Monthly Budget Challenge</h1>
+      <h1 class="game-title">💰 Monthly Savings Challenge</h1>
     </div>
 
-    <div id="gameScreen" class="game-content">
+    <!-- User Input Screen -->
+    <div id="inputScreen" class="game-content">
       <div class="left-panel">
         <div class="character-display">
-          <div class="character" id="character">🧑‍💼</div>
+          <div class="character">💡</div>
+          <div class="user-stats">
+            <div style="text-align: center; color: #333;">
+              <h3 style="margin-bottom: 15px; color: #20bf6b;">Tell us about your savings goals!</h3>
+              <p style="font-size: 0.95rem; line-height: 1.4; margin-bottom: 20px;">
+                Share your income, expenses, savings targets, and financial dreams. 
+                We'll create a personalized 10-month savings challenge just for you!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <div class="month-header">
+          <div class="month-title">Share Your Savings Vision</div>
+          <div class="month-budget">Personalized Savings Planning</div>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 400px; gap: 20px;">
+          <textarea 
+            id="userPrompt" 
+            placeholder="Example: I'm 25 years old, earn ₹60,000 monthly, current expenses are ₹35,000. I want to save for an emergency fund and vacation. My goal is to save ₹20,000 per month and build a corpus of ₹5 lakhs..."
+            style="width: 100%; max-width: 500px; height: 150px; padding: 15px; border: 2px solid #20bf6b; border-radius: 15px; font-size: 1rem; resize: vertical; font-family: 'Poppins', sans-serif;"
+          ></textarea>
+          
+          <button 
+            id="generateGameBtn"
+            style="background: linear-gradient(135deg, #20bf6b, #01a3a4); color: white; border: none; padding: 15px 40px; font-size: 1.2rem; font-weight: 600; border-radius: 25px; cursor: pointer; transition: all 0.3s ease;"
+            onclick="generateCustomGame()"
+          >
+            🚀 Create My Savings Challenge
+          </button>
+          
+          <button 
+            id="defaultGameBtn"
+            style="background: linear-gradient(135deg, #43cea2, #185a9d); color: white; border: none; padding: 10px 30px; font-size: 1rem; font-weight: 500; border-radius: 20px; cursor: pointer; transition: all 0.3s ease; margin-top: 10px;"
+            onclick="startDefaultGame()"
+          >
+            🎯 Play with Default Scenarios
+          </button>
+          
+          <div id="loadingMessage" style="display: none; text-align: center; color: #20bf6b; font-weight: 600;">
+            <div style="margin-bottom: 10px;">🤖 AI is analyzing your goals...</div>
+            <div style="font-size: 0.9rem; color: #666;">Creating personalized savings scenarios</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="gameScreen" class="game-content" style="display: none;">
+      <div class="left-panel">
+        <div class="character-display">
+          <div class="character" id="character">💰</div>
           <div class="user-stats">
             <div class="stat-item">
               <span class="stat-label">Month:</span>
@@ -489,11 +561,15 @@
               <span class="stat-value" id="totalSaved">₹0</span>
             </div>
             <div class="stat-item">
-              <span class="stat-label">Total Spent:</span>
-              <span class="stat-value" id="totalSpent">₹0</span>
+              <span class="stat-label">Savings Value:</span>
+              <span class="stat-value growth-value" id="savingsValue">₹0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Interest Earned:</span>
+              <span class="stat-value growth-value" id="interestEarned">₹0</span>
             </div>
             <div class="budget-remaining" id="budgetRemaining">
-              Monthly Budget: ₹0
+              Monthly Target: ₹0
             </div>
           </div>
         </div>
@@ -504,7 +580,7 @@
       <div class="right-panel">
         <div class="month-header">
           <div class="month-title" id="monthTitle">Month 1</div>
-          <div class="month-budget" id="monthBudget">Budget: ₹25,000</div>
+          <div class="month-budget" id="monthBudget">Savings Target: ₹12,000</div>
         </div>
         
         <div class="options-grid" id="optionsGrid"></div>
@@ -512,13 +588,14 @@
     </div>
 
     <div class="end-screen" id="endScreen">
-      <div class="final-character">🎉</div>
-      <h2 style="font-size: 2.5rem; color: #4ecdc4; margin-bottom: 20px;">Challenge Complete!</h2>
-      <p class="celebration-text">You've managed your budget for 10 months!</p>
-      <div class="final-score">Saved: ₹<span id="finalSavings">0</span></div>
-      <div class="final-score" style="color: #ff6b6b;">Spent: ₹<span id="finalSpending">0</span></div>
+      <div class="final-character">🏆</div>
+      <h2 style="font-size: 2.5rem; color: #20bf6b; margin-bottom: 20px;">Savings Journey Complete!</h2>
+      <p class="celebration-text">You've built your savings over 10 months!</p>
+      <div class="final-score">Saved: ₹<span id="finalSaved">0</span></div>
+      <div class="final-score" style="color: #01a3a4;">Total Value: ₹<span id="finalValue">0</span></div>
+      <div class="final-score" style="color: #01a3a4;">Interest Earned: ₹<span id="finalInterest">0</span></div>
       <p style="font-size: 1.2rem; margin: 30px 0; color: #666;" id="finalMessage"></p>
-      <button class="restart-btn" onclick="restartGame()">🎮 Play Again</button>
+      <button class="restart-btn" onclick="restartGame()">💰 Save Again</button>
     </div>
   </div>
 
@@ -526,145 +603,117 @@
     // Game state
     let month = 1;
     let totalSaved = 0;
-    let totalSpent = 0;
+    let savingsValue = 0;
     const totalMonths = 10;
     
-    // This would come from backend - monthly budgets
-    const monthlyBudgets = {
-      1: 25000, 2: 22000, 3: 28000, 4: 24000, 5: 26000,
-      6: 30000, 7: 23000, 8: 27000, 9: 25000, 10: 29000
+    // Dynamic data from API
+    let monthlyTargets = {};
+    let monthlyOptions = {};
+
+    // Default fallback data
+    const defaultMonthlyTargets = {
+      1: 12000, 2: 10000, 3: 15000, 4: 11000, 5: 13000,
+      6: 18000, 7: 9000, 8: 14000, 9: 12000, 10: 16000
     };
 
-    // Monthly spending/saving options (this would come from backend)
-    const monthlyOptions = {
+    const defaultMonthlyOptions = {
       1: {
-        spend: [
-          { label: "Fancy dinner out", amount: 3000, emoji: "🍽️" },
-          { label: "New gadget", amount: 8000, emoji: "📱" },
-          { label: "Weekend getaway", amount: 12000, emoji: "🏖️" }
+        high: [
+          { label: "Emergency Fund", amount: 8000, emoji: "🚨", growthRate: 0.04, category: "high" },
+          { label: "Fixed Deposit", amount: 10000, emoji: "🏦", growthRate: 0.07, category: "high" },
+          { label: "PPF Contribution", amount: 12000, emoji: "🏛️", growthRate: 0.08, category: "high" }
         ],
-        save: [
-          { label: "Cook at home", amount: 3000, emoji: "👨‍🍳" },
-          { label: "Skip unnecessary shopping", amount: 8000, emoji: "🛒" },
-          { label: "Stay home weekend", amount: 12000, emoji: "🏠" }
-        ]
-      },
-      2: {
-        aggressive: [
-          { label: "Maximum Investment", amount: 22000, emoji: "🚀", category: "Investment", description: "Invest 25% of income" },
-          { label: "Debt Elimination", amount: 20000, emoji: "💳", category: "Debt", description: "Pay off high-interest debt" },
-          { label: "Retirement Boost", amount: 18000, emoji: "🏖️", category: "Retirement", description: "Max retirement savings" }
+        medium: [
+          { label: "Mutual Fund SIP", amount: 6000, emoji: "📊", growthRate: 0.05, category: "medium" },
+          { label: "Recurring Deposit", amount: 4000, emoji: "💳", growthRate: 0.06, category: "medium" },
+          { label: "Gold Investment", amount: 5000, emoji: "🥇", growthRate: 0.04, category: "medium" }
         ],
-        moderate: [
-          { label: "Balanced Portfolio", amount: 14000, emoji: "📊", category: "Investment", description: "Diversified savings" },
-          { label: "Skill Development", amount: 12000, emoji: "📚", category: "Education", description: "Invest in learning" },
-          { label: "Health Fund", amount: 10000, emoji: "🏥", category: "Health", description: "Medical emergency fund" }
-        ],
-        conservative: [
-          { label: "Fixed Deposits", amount: 8000, emoji: "🏦", category: "Banking", description: "Safe bank deposits" },
-          { label: "Insurance Premium", amount: 6000, emoji: "🛡️", category: "Insurance", description: "Life/health insurance" },
-          { label: "Gradual Growth", amount: 4000, emoji: "🌱", category: "Growth", description: "Slow and steady" }
-        ]
-      },
-      3: {
-        spend: [
-          { label: "Luxury spa day", amount: 4000, emoji: "💆‍♂️" },
-          { label: "Designer clothes", amount: 9000, emoji: "👗" },
-          { label: "High-end electronics", amount: 15000, emoji: "💻" }
-        ],
-        save: [
-          { label: "Home workout", amount: 4000, emoji: "🏋️‍♂️" },
-          { label: "Thrift shopping", amount: 9000, emoji: "♻️" },
-          { label: "Use existing devices", amount: 15000, emoji: "📱" }
-        ]
-      },
-      4: {
-        spend: [
-          { label: "Concert tickets", amount: 3500, emoji: "🎵" },
-          { label: "Fine dining", amount: 5000, emoji: "🥂" },
-          { label: "Luxury car service", amount: 8000, emoji: "🚗" }
-        ],
-        save: [
-          { label: "Free music online", amount: 3500, emoji: "🎧" },
-          { label: "Home cooking", amount: 5000, emoji: "🍳" },
-          { label: "Public transport", amount: 8000, emoji: "🚌" }
-        ]
-      },
-      5: {
-        spend: [
-          { label: "Premium gym", amount: 2500, emoji: "🏃‍♂️" },
-          { label: "Trendy cafe visits", amount: 4000, emoji: "☕" },
-          { label: "Latest fashion", amount: 7000, emoji: "👠" }
-        ],
-        save: [
-          { label: "Home workouts", amount: 2500, emoji: "🤸‍♂️" },
-          { label: "Make coffee at home", amount: 4000, emoji: "☕" },
-          { label: "Classic wardrobe", amount: 7000, emoji: "👔" }
-        ]
-      },
-      6: {
-        spend: [
-          { label: "Gaming setup", amount: 10000, emoji: "🎮" },
-          { label: "Premium skincare", amount: 3000, emoji: "🧴" },
-          { label: "Expensive courses", amount: 8000, emoji: "📚" }
-        ],
-        save: [
-          { label: "Free games", amount: 10000, emoji: "🕹️" },
-          { label: "DIY skincare", amount: 3000, emoji: "🥒" },
-          { label: "Free online courses", amount: 8000, emoji: "💻" }
-        ]
-      },
-      7: {
-        spend: [
-          { label: "Air travel", amount: 15000, emoji: "✈️" },
-          { label: "Luxury hotel", amount: 8000, emoji: "🏨" },
-          { label: "Expensive souvenirs", amount: 3000, emoji: "🛍️" }
-        ],
-        save: [
-          { label: "Train travel", amount: 15000, emoji: "🚂" },
-          { label: "Budget accommodation", amount: 8000, emoji: "🏠" },
-          { label: "Photo memories", amount: 3000, emoji: "📸" }
-        ]
-      },
-      8: {
-        spend: [
-          { label: "Professional makeover", amount: 5000, emoji: "💄" },
-          { label: "Tech upgrades", amount: 12000, emoji: "⌚" },
-          { label: "Gourmet ingredients", amount: 2000, emoji: "🍾" }
-        ],
-        save: [
-          { label: "DIY beauty", amount: 5000, emoji: "✨" },
-          { label: "Keep current tech", amount: 12000, emoji: "📱" },
-          { label: "Simple ingredients", amount: 2000, emoji: "🥬" }
-        ]
-      },
-      9: {
-        spend: [
-          { label: "Professional courses", amount: 8000, emoji: "🎓" },
-          { label: "Home decor upgrade", amount: 6000, emoji: "🪴" },
-          { label: "Premium services", amount: 4000, emoji: "⭐" }
-        ],
-        save: [
-          { label: "Free skill learning", amount: 8000, emoji: "📖" },
-          { label: "DIY decoration", amount: 6000, emoji: "🎨" },
-          { label: "Basic services", amount: 4000, emoji: "🔧" }
-        ]
-      },
-      10: {
-        spend: [
-          { label: "Celebration party", amount: 10000, emoji: "🎉" },
-          { label: "Luxury purchases", amount: 8000, emoji: "💎" },
-          { label: "Expensive hobbies", amount: 6000, emoji: "🎯" }
-        ],
-        save: [
-          { label: "Home celebration", amount: 10000, emoji: "🏠" },
-          { label: "Smart purchases", amount: 8000, emoji: "🛒" },
-          { label: "Free hobbies", amount: 6000, emoji: "📚" }
+        low: [
+          { label: "Savings Account", amount: 2000, emoji: "💰", growthRate: 0.03, category: "low" },
+          { label: "Pocket Money Save", amount: 1500, emoji: "🐷", growthRate: 0.02, category: "low" },
+          { label: "Loose Change", amount: 1000, emoji: "🪙", growthRate: 0.01, category: "low" }
         ]
       }
     };
 
-    const characters = ['🧑‍💼', '👩‍💼', '🧑‍🎓', '👩‍🎓', '🧑‍💻', '👩‍💻'];
+    // Function to generate default data for all 10 months
+    function generateDefaultData() {
+      const fullOptions = {};
+      for (let i = 1; i <= 10; i++) {
+        fullOptions[i] = JSON.parse(JSON.stringify(defaultMonthlyOptions[1])); // Deep copy
+      }
+      return fullOptions;
+    }
+
+    async function generateCustomGame() {
+      const userPrompt = document.getElementById('userPrompt').value.trim();
+      if (!userPrompt) {
+        alert('Please share your savings goals first!');
+        return;
+      }
+
+      const loadingMessage = document.getElementById('loadingMessage');
+      const generateBtn = document.getElementById('generateGameBtn');
+      
+      loadingMessage.style.display = 'block';
+      generateBtn.disabled = true;
+
+      try {
+        const response = await fetch('/generate-savings-game', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message: userPrompt })
+        });
+
+        if (response.ok) {
+          const gameData = await response.json();
+          monthlyTargets = gameData.monthlyTargets || defaultMonthlyTargets;
+          monthlyOptions = gameData.monthlyOptions || generateDefaultData();
+          
+          console.log('🎯 Custom savings game generated successfully!');
+        } else {
+          throw new Error('API call failed');
+        }
+      } catch (error) {
+        console.error('Error generating custom game:', error);
+        // Use default data on error
+        monthlyTargets = defaultMonthlyTargets;
+        monthlyOptions = generateDefaultData();
+      }
+
+      loadingMessage.style.display = 'none';
+      generateBtn.disabled = false;
+      
+      // Start the game
+      startGame();
+    }
+
+    function startDefaultGame() {
+      // Use default data
+      monthlyTargets = defaultMonthlyTargets;
+      monthlyOptions = generateDefaultData();
+      
+      // Start the game
+      startGame();
+    }
+
+    function startGame() {
+      document.getElementById('inputScreen').style.display = 'none';
+      document.getElementById('gameScreen').style.display = 'flex';
+      
+      // Reset game state
+      month = 1;
+      totalSaved = 0;
+      savingsValue = 0;
+      
+      // Initialize game
+      updateUI();
+      renderOptions();
+    }
+
+    const characters = ['💰', '🏦', '💳', '🎯', '💎', '🏆'];
     let currentCharacter = characters[Math.floor(Math.random() * characters.length)];
 
     function createStars() {
@@ -694,10 +743,11 @@
     function updateUI() {
       document.getElementById('currentMonth').textContent = `${month} / ${totalMonths}`;
       document.getElementById('totalSaved').textContent = `₹${totalSaved.toLocaleString()}`;
-      document.getElementById('totalSpent').textContent = `₹${totalSpent.toLocaleString()}`;
+      document.getElementById('savingsValue').textContent = `₹${savingsValue.toLocaleString()}`;
+      document.getElementById('interestEarned').textContent = `₹${(savingsValue - totalSaved).toLocaleString()}`;
       document.getElementById('monthTitle').textContent = `Month ${month}`;
-      document.getElementById('monthBudget').textContent = `Budget: ₹${monthlyBudgets[month].toLocaleString()}`;
-      document.getElementById('budgetRemaining').textContent = `Monthly Budget: ₹${monthlyBudgets[month].toLocaleString()}`;
+      document.getElementById('monthBudget').textContent = `Savings Target: ₹${monthlyTargets[month].toLocaleString()}`;
+      document.getElementById('budgetRemaining').textContent = `Monthly Target: ₹${monthlyTargets[month].toLocaleString()}`;
       createProgressIndicator();
     }
 
@@ -707,41 +757,65 @@
       
       const options = monthlyOptions[month];
       
-      // Render spending options
-      options.spend.forEach((option, index) => {
+      // Render high savings options
+      options.high.forEach((option, index) => {
         const card = document.createElement('div');
-        card.className = 'option-card spend-card';
+        card.className = 'option-card high-savings-card';
         card.style.animationDelay = (index * 0.1) + 's';
         card.innerHTML = `
           <div class="option-emoji">${option.emoji}</div>
           <div class="option-label">${option.label}</div>
-          <div class="option-amount">-₹${option.amount.toLocaleString()}</div>
+          <div class="option-amount">₹${option.amount.toLocaleString()}</div>
+          <div class="option-growth">${(option.growthRate * 100).toFixed(1)}% growth</div>
         `;
-        card.onclick = () => selectOption('spend', option.amount);
+        card.onclick = () => selectOption(option);
         optionsGrid.appendChild(card);
       });
 
-      // Render saving options
-      options.save.forEach((option, index) => {
+      // Render medium savings options
+      options.medium.forEach((option, index) => {
         const card = document.createElement('div');
-        card.className = 'option-card save-card';
-        card.style.animationDelay = ((options.spend.length + index) * 0.1) + 's';
+        card.className = 'option-card medium-savings-card';
+        card.style.animationDelay = ((options.high.length + index) * 0.1) + 's';
         card.innerHTML = `
           <div class="option-emoji">${option.emoji}</div>
           <div class="option-label">${option.label}</div>
-          <div class="option-amount">+₹${option.amount.toLocaleString()}</div>
+          <div class="option-amount">₹${option.amount.toLocaleString()}</div>
+          <div class="option-growth">${(option.growthRate * 100).toFixed(1)}% growth</div>
         `;
-        card.onclick = () => selectOption('save', option.amount);
+        card.onclick = () => selectOption(option);
+        optionsGrid.appendChild(card);
+      });
+
+      // Render low savings options
+      options.low.forEach((option, index) => {
+        const card = document.createElement('div');
+        card.className = 'option-card low-savings-card';
+        card.style.animationDelay = ((options.high.length + options.medium.length + index) * 0.1) + 's';
+        card.innerHTML = `
+          <div class="option-emoji">${option.emoji}</div>
+          <div class="option-label">${option.label}</div>
+          <div class="option-amount">₹${option.amount.toLocaleString()}</div>
+          <div class="option-growth">${(option.growthRate * 100).toFixed(1)}% growth</div>
+        `;
+        card.onclick = () => selectOption(option);
         optionsGrid.appendChild(card);
       });
     }
 
-    function selectOption(type, amount) {
-      if (type === 'spend') {
-        totalSpent += amount;
-      } else {
-        totalSaved += amount;
-      }
+    function selectOption(option) {
+      // Add savings amount
+      totalSaved += option.amount;
+      
+      // Calculate growth based on rate
+      let actualGrowth = option.growthRate;
+      
+      // Add slight variance to make it realistic
+      actualGrowth *= (0.9 + Math.random() * 0.2); // 90% to 110% of expected growth
+      
+      // Add the savings with its growth to total value
+      const monthlyGrowth = option.amount * (1 + actualGrowth / 12);
+      savingsValue += monthlyGrowth;
 
       // Visual feedback
       const character = document.getElementById('character');
@@ -764,38 +838,48 @@
     function endGame() {
       document.getElementById('gameScreen').style.display = 'none';
       document.getElementById('endScreen').style.display = 'block';
-      document.getElementById('finalSavings').textContent = totalSaved.toLocaleString();
-      document.getElementById('finalSpending').textContent = totalSpent.toLocaleString();
+      document.getElementById('finalSaved').textContent = totalSaved.toLocaleString();
+      document.getElementById('finalValue').textContent = savingsValue.toLocaleString();
+      document.getElementById('finalInterest').textContent = (savingsValue - totalSaved).toLocaleString();
       
       const finalMessage = document.getElementById('finalMessage');
-      const savingsRate = (totalSaved / (totalSaved + totalSpent)) * 100;
+      const savingsGoalMet = totalSaved >= 100000; // ₹1 lakh goal
+      const interestEarned = savingsValue - totalSaved;
       
-      if (savingsRate >= 70) {
-        finalMessage.textContent = "Amazing! You're a savings superstar! 🌟";
-      } else if (savingsRate >= 50) {
-        finalMessage.textContent = "Great job! You maintained a good balance! 💪";
-      } else if (savingsRate >= 30) {
-        finalMessage.textContent = "Not bad! Room for improvement in saving! 👍";
+      if (totalSaved >= 150000) {
+        finalMessage.textContent = "Amazing! You're a savings champion! 🌟";
+      } else if (totalSaved >= 120000) {
+        finalMessage.textContent = "Excellent savings discipline! Keep it up! 💪";
+      } else if (totalSaved >= 100000) {
+        finalMessage.textContent = "Great job! You've built a solid savings habit! 👍";
+      } else if (totalSaved >= 80000) {
+        finalMessage.textContent = "Good progress! Every rupee saved counts! 📈";
       } else {
-        finalMessage.textContent = "You enjoyed life! Try saving more next time! 🎯";
+        finalMessage.textContent = "Every savings journey starts with a single step! 🎯";
       }
     }
 
     function restartGame() {
       month = 1;
       totalSaved = 0;
-      totalSpent = 0;
+      savingsValue = 0;
       currentCharacter = characters[Math.floor(Math.random() * characters.length)];
+      document.getElementById('character').textContent = currentCharacter;
       document.getElementById('endScreen').style.display = 'none';
-      document.getElementById('userInputScreen').style.display = 'flex';
       document.getElementById('gameScreen').style.display = 'none';
+      document.getElementById('inputScreen').style.display = 'flex';
+      document.getElementById('userPrompt').value = ''; // Clear the input
     }
 
     // Initialize game
     createStars();
     document.getElementById('character').textContent = currentCharacter;
-    updateUI();
-    renderOptions();
+    
+    // Set default data
+    monthlyTargets = defaultMonthlyTargets;
+    monthlyOptions = generateDefaultData();
+    
+    // Show input screen initially
   </script>
 </body>
 </html>
